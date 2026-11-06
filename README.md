@@ -1,33 +1,70 @@
-# Lab Program 13 – Normalize Student Table up to 3NF
+USE CollegeDB;
 
-## Aim
-Normalize the given Student table up to Third Normal Form (3NF) and implement the normalized design using MySQL.
+-- Write your sql code
+--Create tables
+CREATE TABLE Department (
+    DepartmentID INT PRIMARY KEY,
+    DepartmentName VARCHAR(50)
+);
 
-## Given Table
+CREATE TABLE Faculty (
+    FacultyID INT PRIMARY KEY,
+    FacultyName VARCHAR(50),
+    DepartmentID INT,
+    FOREIGN KEY (DepartmentID) REFERENCES Department(DepartmentID)
+);
 
-    Student(StudentID, StudentName, CourseName, FacultyName, DepartmentName)
+CREATE TABLE Course (
+    CourseID INT PRIMARY KEY,
+    CourseName VARCHAR(50),
+    FacultyID INT,
+    FOREIGN KEY (FacultyID) REFERENCES Faculty(FacultyID)
+);
 
-## Functional Dependencies
-
-    StudentID → StudentName, CourseName
-    CourseName → FacultyName
-    FacultyName → DepartmentName
-
-## Tasks
-
-1. Identify the candidate key.
-2. Convert the relation to 1NF.
-3. Convert the relation to 2NF.
-4. Convert the relation to 3NF.
-5. Implement the final normalized relations using SQL.
-6. Define appropriate primary keys and foreign keys.
-7. Insert sample data.
+CREATE TABLE Student (
+    StudentID INT PRIMARY KEY,
+    StudentName VARCHAR(50),
+    CourseID INT,
+    FOREIGN KEY (CourseID) REFERENCES Course(CourseID)
+);
 
 
-## Submission
+-- Department Table
+INSERT INTO Department VALUES
+(1, 'Computer Science'),
+(2, 'Commerce'),
+(3, 'Mathematics'),
+(4, 'Physics');
 
-Commit and push the completed files to GitHub. GitHub Actions will automatically execute the test cases.
 
-## Learning Outcome
+-- Faculty Table
+INSERT INTO Faculty VALUES
+(101, 'Ravi', 1),
+(102, 'Priya', 2),
+(103, 'Kumar', 3),
+(104, 'Anitha', 4);
 
-After completing this practical, students will be able to identify functional dependencies, partial and transitive dependencies, normalize a relation up to 3NF, and implement the normalized design using SQL.
+
+-- Course Table
+INSERT INTO Course VALUES
+(201, 'BCA', 101),
+(202, 'BCom', 102),
+(203, 'BSc Maths', 103),
+(204, 'BSc Physics', 104);
+
+
+-- Student Table
+INSERT INTO Student VALUES
+(1001, 'Arun', 201),
+(1002, 'Priya', 202),
+(1003, 'Karthik', 203),
+(1004, 'Divya', 204);
+
+
+-- Display Student Details
+SELECT s.StudentID, s.StudentName, c.CourseName,
+       f.FacultyName, d.DepartmentName
+FROM Student s
+JOIN Course c ON s.CourseID = c.CourseID
+JOIN Faculty f ON c.FacultyID = f.FacultyID
+JOIN Department d ON f.DepartmentID = d.DepartmentID;
